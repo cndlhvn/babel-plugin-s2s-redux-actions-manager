@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir lib",
-    "test": "node test.js test/index.js",
+    "test": "node test.js test/actionTypes/user.js",
     "all": "babel src --out-dir lib; node test.js test/actiontypes/user.js"
   },
   "engines": {
