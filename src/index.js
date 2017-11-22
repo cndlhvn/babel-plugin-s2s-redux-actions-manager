@@ -1,12 +1,18 @@
 import fs from 'fs'
 import globby from 'globby'
+import createFile from 'babel-file';
+import generate from '@babel/generator';
 
 module.exports = babel => {
   var t = babel.types;
+  let variableDeclarators = []
 
   return {
     name: "s2s-redux-actions-manager",
     visitor: {
+      VariableDeclarator(path,state){
+        variableDeclarators.push(path.node.id.name)
+      },
       Program: {
         enter(path, state) {
           const { input, output } = state.opts
@@ -35,6 +41,43 @@ module.exports = babel => {
               }
             }
           )
+        },
+
+        exit(path, state){
+          const { output } = state.opts
+
+          const inputFilePath = state.file.opts.filename
+          const inputFileName = inputFilePath.split("/").pop()
+
+          const outputDirPath = output.split("/").reverse().slice(1).reverse().join("/")
+          const outputFilePath = outputDirPath + "/" + inputFileName
+
+          let outputFile
+          let actionNameArray = []
+
+          fs.readFile(outputFilePath, (err, data) => {
+            const outputFileSrc = data.toString();
+            outputFile = createFile(outputFileSrc, {
+              filename: outputFilePath
+            })
+
+            outputFile.path.traverse({
+              VariableDeclarator(path){
+                actionNameArray.push(path.node.id.name)
+              }
+            })
+
+            variableDeclarators.forEach((val,index,ar) => {
+              if (actionNameArray.indexOf(val) == -1){
+                outputFile.path.node.body.push(t.ExpressionStatement(t.Identifier(val)))
+                const resultSrc = generate(outputFile.ast).code;
+                fs.writeFile(outputFilePath, resultSrc, (err) => { if(err) {throw err} });
+              }
+            });
+
+            actionNameArray = []
+            variableDeclarators = []
+          })
         }
       }
     }
