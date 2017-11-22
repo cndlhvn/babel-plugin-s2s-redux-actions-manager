@@ -75,6 +75,22 @@ module.exports = babel => {
               }
             });
 
+            if(actionNameArray.length > variableDeclarators.length){
+              actionNameArray.forEach((val,index,ar) => {
+                if (variableDeclarators.indexOf(val) == -1){
+                  outputFile.path.traverse({
+                    VariableDeclarator(path){
+                      if(path.node.id.name == val){
+                        path.remove()
+                      }
+                    }
+                  })
+                }
+              })
+              const resultSrc = generate(outputFile.ast).code
+              fs.writeFile(outputFilePath, resultSrc, (err) => { if (err) { throw err} })
+            }
+
             actionNameArray = []
             variableDeclarators = []
           })
