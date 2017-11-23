@@ -1,7 +1,7 @@
 import fs from 'fs'
 import globby from 'globby'
 import createFile from 'babel-file';
-import generate from '@babel/generator';
+import generate from 'babel-generator';
 
 module.exports = babel => {
   var t = babel.types;
