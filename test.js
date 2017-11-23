@@ -5,7 +5,7 @@ var fileName = process.argv[2];
 
 babel.transformFileSync(fileName, {
   plugins: [['../../lib/index.js',{
-    input: 'test/actionTypes/*.js',
+    input: 'test/builders/*.js',
     output: 'test/actions/*.js'
   }]]
 })

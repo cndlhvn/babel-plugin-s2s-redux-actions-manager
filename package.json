@@ -1,12 +1,12 @@
 {
   "name": "babel-plugin-s2s-redux-actions-manager",
   "version": "0.0.1",
-  "description": "manage redux actions from actionTypes",
+  "description": "manage redux actions",
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir lib",
-    "test": "node test.js test/actionTypes/user.js",
-    "all": "babel src --out-dir lib; node test.js test/actiontypes/user.js"
+    "test": "node test.js test/builders/user.js",
+    "all": "babel src --out-dir lib; node test.js test/builders/user.js"
   },
   "engines": {
     "node": ">=6"
